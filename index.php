@@ -107,7 +107,7 @@
 
                     $("#LastTemperature").text(feed[0].field2+ " C");
                     $("#LastHumidity").text(feed[0].field1+ " %");
-                    $("#LastUpdate").text(feed[0].created_at);
+                    $("#LastUpdate").text(DateStr);
                 })
                 .fail(function(error){
 
