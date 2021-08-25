@@ -11,6 +11,7 @@
             <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.0/dist/chart.min.js"></script>
     </head>
     <body>
+        <h1>62107677 Mustakeem Laehlong</h1>
         <div class="container">
             <div class="row">
                 <div class="col-6">
@@ -107,7 +108,7 @@
 
                     $("#LastTemperature").text(feed[0].field2+ " C");
                     $("#LastHumidity").text(feed[0].field1+ " %");
-                    $("#LastUpdate").text(DateStr);
+                    $("#LastUpdate").text(dateStr);
                 })
                 .fail(function(error){
 
