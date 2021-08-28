@@ -20,7 +20,12 @@
                 <div class="col-6">
                     <canvas id="myChart2" width="400" height="200"></canvas>
                 </div>
-            </div>    
+            </div>   
+            <div class = "row">
+                <div class = "col-6">
+                   <canvas id="myChart3" width="400" height="200"></canvas>
+                </div>
+            </div> 
 
             <div class="row">
                 <div class="col-3">
@@ -31,6 +36,10 @@
                     <div class="row">
                         <div class="col-4"><b>Humidity</b></div>
                         <div class="col-8"><span id="LastHumidity"> </span></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4"><b>LDR</b></div>
+                        <div class="col-8"><span id="LastLdr"> </span></div>
                     </div>
                     <div class="row">
                         <div class="col-4">Update</div>
@@ -70,16 +79,29 @@
                 }
             });
         }
+        function showLine2(data3){
+            var ctxyz = document.getElementById("myChart3").getContext("2d");
+            var myChart = new Chart(ctxyz,{
+                type:'line',
+                data:{
+                    labels:data3.xlabel,
+                    datasets:[{
+                        label:data3.label,
+                        data:data3.data
+                    }]
+                }
+            });
+        }
 
         $(()=>{
-            let url = "https://api.thingspeak.com/channels/1458411/feeds.json?results=50";
+            let url = "https://api.thingspeak.com/channels/1458411/feeds.json?results=240";
             $.getJSON(url)
                 .done(function(data){
                     let feed = data.feeds;
                     let chan = data.channel;
                     console.log(feed);
 
-                    const d = new Date(feed[0].created_at);
+                    const d = new Date(feed[239].created_at);
                     const monthNames = ["January","February","March","April","May","July","August","September","October","November","December"];
                     let dateStr = d.getDate()+" "+monthNames[d.getMonth()]+" "+d.getFullYear();
                     dateStr += " "+d.getHours()+":"+d.getMinutes();
@@ -88,11 +110,13 @@
                     var xlabel = [];
                     var temp = [];
                     var hum = [];
+                    var ldr = [];
 
                     $.each(feed,(k,v)=>{
                         xlabel.push(v.entry_id);
                         hum.push(v.field1);
                         temp.push(v.field2);
+                        ldr.push(v.field3);
                     });
                     var data = new Object();
                     data.xlabel = xlabel;
@@ -106,8 +130,15 @@
                     data2.label = chan.field1;
                     showLine(data2);
 
-                    $("#LastTemperature").text(feed[0].field2+ " C");
-                    $("#LastHumidity").text(feed[0].field1+ " %");
+                    var data3 = new Object();
+                    data3.xlabel = xlabel;
+                    data3.data = ldr;
+                    data3.label = chan.field3;
+                    showLine2(data3);
+
+                    $("#LastTemperature").text(feed[239].field2+ " C");
+                    $("#LastHumidity").text(feed[239].field1+ " %");
+                    $("#LastLdr").text(feed[239].field3+ " Lux");
                     $("#LastUpdate").text(dateStr);
                 })
                 .fail(function(error){
